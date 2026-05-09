@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MyAgentCRM — AI Real Estate CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FFFFFF;
+  --surface:#F4F6FA;
+  --surface2:#E8EDF5;
+  --surface3:#DDE3EF;
+  --border:#C8D0E0;
+  --border2:#A8B4CC;
+  --gold:#DC1E35;
+  --gold2:#FF3348;
+  --teal:#2563EB;
+  --red:#DC1E35;
+  --green:#4ADE80;
+  --blue:#3B82F6;
+  --text:#0A1628;
+  --text2:#4A5878;
+  --text3:#7A8CA8;
+  --radius:6px;
+  --radius-lg:12px;
+}
+
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOPBAR */
+.topbar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.logo{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text);display:flex;align-items:center;gap:8px}
+.logo-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.logo span{color:var(--gold)}
+.top-right{display:flex;align-items:center;gap:12px}
+.plan-badge{
+  font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  background:linear-gradient(135deg,#DC1E35,#FF3348);
+  color:#fff;padding:4px 10px;border-radius:100px;
+}
+.user-dot{width:32px;height:32px;border-radius:50%;background:var(--surface3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;color:var(--gold)}
+
+/* SHELL */
+.shell{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:1rem 0;
+  overflow-y:auto;
+}
+.nav-section{padding:0.5rem 1rem;font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-top:0.5rem}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 1.25rem;
+  font-size:0.88rem;font-weight:400;color:var(--text2);
+  cursor:pointer;border-left:2px solid transparent;
+  transition:all 0.15s;
+}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--surface2);font-weight:500}
+.nav-icon{width:16px;text-align:center;font-size:0.9rem}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:0.65rem;font-weight:700;padding:1px 6px;border-radius:100px}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* PAGE */
+.page{display:none;flex-direction:column;flex:1;padding:1.75rem 2rem;gap:1.5rem;animation:fadeIn 0.2s ease}
+.page.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+.page-title{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:0}
+.page-sub{font-size:0.85rem;color:var(--text2);margin-top:2px}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:1.25rem 1.25rem 1rem;position:relative;overflow:hidden;
+}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.gold::before{background:var(--red)}
+.stat-card.teal::before{background:var(--teal)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.red::before{background:var(--red)}
+.stat-label{font-size:0.72rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3)}
+.stat-val{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--text);margin:4px 0 2px}
+.stat-change{font-size:0.78rem;color:var(--text3)}
+.stat-change.up{color:var(--green)}
+.stat-change.down{color:var(--red)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem}
+.card-title{font-size:0.8rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem}
+.card-row{display:flex;gap:1rem}
+
+/* LEAD TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:0.875rem}
+th{font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:hover td{background:var(--surface2);color:var(--text)}
+.status-pill{font-size:0.7rem;font-weight:600;padding:3px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:0.06em}
+.pill-hot{background:#7f1d1d;color:#fca5a5}
+.pill-warm{background:#78350f;color:#fcd34d}
+.pill-cold{background:#1e3a5f;color:#93c5fd}
+.pill-closed{background:#14532d;color:#86efac}
+.pill-rented{background:#1e1b4b;color:#a5b4fc}
+
+/* ACTION BTN */
+.btn{
+  font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:500;
+  padding:8px 16px;border-radius:var(--radius);border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text);cursor:pointer;
+  transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.primary{background:var(--red);color:#fff;border-color:var(--red);font-weight:600}
+.btn.primary:hover{background:var(--gold2);color:#fff}
+.btn.sm{padding:5px 12px;font-size:0.78rem}
+
+/* FORM ELEMENTS */
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.form-label{font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3)}
+input,select,textarea{
+  font-family:'Outfit',sans-serif;font-size:0.9rem;color:var(--text);
+  background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:9px 12px;width:100%;outline:none;transition:border-color 0.15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:80px}
+select option{background:var(--surface2)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* AI CHAT */
+.chat-wrap{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;padding-right:4px}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;flex-shrink:0}
+.msg-avatar.ai{background:var(--red);color:#fff}
+.msg-avatar.user{background:var(--surface3);color:var(--text2);border:1px solid var(--border2)}
+.msg-bubble{
+  max-width:80%;padding:10px 14px;border-radius:var(--radius-lg);font-size:0.875rem;line-height:1.5;
+}
+.msg.ai .msg-bubble{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.msg.user .msg-bubble{background:var(--blue);color:#fff;font-weight:500}
+.chat-input-row{display:flex;gap:8px;margin-top:8px}
+.chat-input-row input{flex:1}
+
+/* LISTING CARDS */
+.listing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.listing-card{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;cursor:pointer;transition:border-color 0.15s;
+}
+.listing-card:hover{border-color:var(--gold)}
+.listing-img{
+  height:140px;background:var(--surface3);display:flex;align-items:center;justify-content:center;
+  font-size:2.5rem;position:relative;
+}
+.listing-tag{
+  position:absolute;top:10px;left:10px;
+  font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;
+}
+.tag-sale{background:var(--red);color:#fff}
+.tag-rent{background:var(--blue);color:#fff}
+.listing-info{padding:12px 14px}
+.listing-price{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold);font-weight:600}
+.listing-addr{font-size:0.82rem;color:var(--text2);margin-top:2px;margin-bottom:8px}
+.listing-meta{display:flex;gap:10px;font-size:0.75rem;color:var(--text3)}
+
+/* MAINTENANCE */
+.maint-list{display:flex;flex-direction:column;gap:8px}
+.maint-item{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 14px;display:flex;align-items:center;gap:12px;
+}
+.maint-pri{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pri-urgent{background:var(--red)}
+.pri-high{background:#f97316}
+.pri-medium{background:var(--gold)}
+.pri-low{background:var(--green)}
+.maint-content{flex:1}
+.maint-title{font-size:0.9rem;color:var(--text);font-weight:500}
+.maint-addr{font-size:0.78rem;color:var(--text3);margin-top:2px}
+.maint-right{text-align:right}
+.maint-date{font-size:0.75rem;color:var(--text3)}
+
+/* AI OUTPUT */
+.ai-output{
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:1.25rem 1.5rem;font-size:0.88rem;color:var(--text2);line-height:1.7;
+  white-space:pre-wrap;font-family:'JetBrains Mono',monospace;font-size:0.82rem;
+  min-height:80px;display:none;
+}
+.ai-output.visible{display:block}
+
+/* SPINNER */
+.spinner{width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;display:none}
+.spinner.visible{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PIPELINE */
+.pipeline{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px}
+.pipe-col{min-width:200px;flex:1}
+.pipe-header{font-size:0.72rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);padding:8px 0;border-bottom:2px solid var(--border2);margin-bottom:10px;display:flex;justify-content:space-between}
+.pipe-count{background:var(--surface3);color:var(--text2);font-size:0.7rem;padding:1px 7px;border-radius:100px}
+.pipe-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s}
+.pipe-card:hover{border-color:var(--gold)}
+.pipe-name{font-size:0.85rem;color:var(--text);font-weight:500}
+.pipe-val{font-size:0.75rem;color:var(--gold);margin-top:3px}
+.pipe-sub{font-size:0.72rem;color:var(--text3);margin-top:2px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+@media(max-width:900px){
+  .sidebar{width:54px}
+  .nav-item span,.nav-section,.logo-dot+*,.plan-badge{display:none}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .listing-grid{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+}
+
+/* ===== WHITE THEME OVERRIDES ===== */
+.topbar{background:#DC1E35 !important;border-bottom:2px solid #B01525 !important;}
+.logo{color:#fff !important;}
+.logo span{color:#fff !important;opacity:0.85;}
+.logo-dot{background:#fff !important;}
+.plan-badge{background:rgba(255,255,255,0.25) !important;color:#fff !important;}
+.user-dot{border-color:#fff !important;color:#fff !important;background:rgba(255,255,255,0.2) !important;}
+.sidebar{background:#1A2744 !important;border-right:none !important;}
+.nav-section{color:#6B84B0 !important;}
+.nav-item{color:#A0B4D0 !important;}
+.nav-item:hover{color:#fff !important;background:rgba(255,255,255,0.08) !important;}
+.nav-item.active{color:#fff !important;border-left-color:#DC1E35 !important;background:rgba(220,30,53,0.15) !important;}
+.stat-card{background:#fff !important;border:1px solid #E0E6F0 !important;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.card{background:#fff !important;border:1px solid #E0E6F0 !important;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.listing-card{background:#fff !important;border:1px solid #E0E6F0 !important;}
+.listing-img{background:#F0F4FA !important;}
+.pipe-card{background:#fff !important;border:1px solid #E0E6F0 !important;}
+.pipe-header{color:#4A5878 !important;border-bottom-color:#C8D0E0 !important;}
+.pipe-count{background:#EEF2FA !important;color:#4A5878 !important;}
+.pipe-name{color:#0A1628 !important;}
+.pipe-sub{color:#7A8CA8 !important;}
+.maint-item{background:#fff !important;border:1px solid #E0E6F0 !important;}
+.form-section-title{color:#DC1E35 !important;}
+table th{color:#7A8CA8 !important;border-bottom:1px solid #E0E6F0 !important;}
+table td{border-bottom:1px solid #F0F4FA !important;color:#4A5878 !important;}
+table tr:hover td{background:#F8FAFE !important;color:#0A1628 !important;}
+input,select,textarea{background:#F8FAFE !important;border:1px solid #C8D0E0 !important;color:#0A1628 !important;}
+input:focus,select:focus,textarea:focus{border-color:#DC1E35 !important;background:#fff !important;}
+.field-value{background:#F8FAFE !important;border:1px solid #E0E6F0 !important;color:#0A1628 !important;}
+.check-item{background:#F8FAFE !important;border:1px solid #E0E6F0 !important;}
+.ai-output{background:#F8FAFE !important;border:1px solid #E0E6F0 !important;color:#4A5878 !important;}
+.msg.ai .msg-bubble{background:#F0F4FA !important;border:1px solid #E0E6F0 !important;color:#0A1628 !important;}
+.stat-val{color:#0A1628 !important;}
+.stat-label{color:#7A8CA8 !important;}
+.card-title{color:#7A8CA8 !important;}
+.page-title{color:#0A1628 !important;}
+.page-sub{color:#7A8CA8 !important;}
+.btn{background:#fff !important;border:1px solid #C8D0E0 !important;color:#0A1628 !important;}
+.btn:hover{border-color:#DC1E35 !important;color:#DC1E35 !important;background:#fff !important;}
+.btn.primary{background:#DC1E35 !important;border-color:#DC1E35 !important;color:#fff !important;}
+.btn.primary:hover{background:#B01525 !important;}
+.pipeline{background:transparent !important;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    MyAgent<span>CRM</span>
+  </div>
+  <div class="top-right">
+    <span class="plan-badge">⚡ AI Pro</span>
+    <div class="user-dot">RE</div>
+  </div>
+</div>
+
+<div class="shell">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="nav-section">Main</div>
+  <div class="nav-item active" onclick="nav('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
+  <div class="nav-item" onclick="nav('leads')"><span class="nav-icon">👥</span><span>Leads</span><span class="nav-badge">7</span></div>
+  <div class="nav-item" onclick="nav('pipeline')"><span class="nav-icon">🔄</span><span>Pipeline</span></div>
+  <div class="nav-item" onclick="nav('listings')"><span class="nav-icon">🏠</span><span>Listings</span></div>
+
+  <div class="nav-section">Tools</div>
+  <div class="nav-item" onclick="nav('maintenance')"><span class="nav-icon">🔧</span><span>Maintenance</span></div>
+  <div class="nav-item" onclick="nav('ai')"><span class="nav-icon">✦</span><span>AI Assistant</span></div>
+  <div class="nav-item" onclick="nav('docs')"><span class="nav-icon">📄</span><span>Documents</span></div>
+
+  <div class="nav-section">Account</div>
+  <div class="nav-item" onclick="nav('settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div>
+    <div class="page-title">Good morning, Agent 👋</div>
+    <div class="page-sub">Here's your real estate portfolio at a glance.</div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card gold">
+      <div class="stat-label">Active Listings</div>
+      <div class="stat-val">24</div>
+      <div class="stat-change up">↑ 4 this month</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">Hot Leads</div>
+      <div class="stat-val">12</div>
+      <div class="stat-change up">↑ 3 new today</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Commission (MTD)</div>
+      <div class="stat-val">$38K</div>
+      <div class="stat-change up">↑ 18% vs last month</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Maintenance Open</div>
+      <div class="stat-val">5</div>
+      <div class="stat-change down">2 urgent</div>
+    </div>
+  </div>
+
+  <div class="card-row">
+    <div class="card" style="flex:2">
+      <div class="card-title">Recent Leads</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Budget</th><th>Status</th><th>Last Contact</th></tr></thead>
+          <tbody>
+            <tr><td>Sarah Mitchell</td><td>Buyer</td><td>$850K</td><td><span class="status-pill pill-hot">Hot</span></td><td>Today</td></tr>
+            <tr><td>James Thornton</td><td>Seller</td><td>$1.2M</td><td><span class="status-pill pill-warm">Warm</span></td><td>Yesterday</td></tr>
+            <tr><td>Priya Sharma</td><td>Renter</td><td>$2,800/mo</td><td><span class="status-pill pill-hot">Hot</span></td><td>Today</td></tr>
+            <tr><td>Daniel Webb</td><td>Buyer</td><td>$620K</td><td><span class="status-pill pill-cold">Cold</span></td><td>3 days ago</td></tr>
+            <tr><td>Lisa Nguyen</td><td>Investor</td><td>$2.5M+</td><td><span class="status-pill pill-warm">Warm</span></td><td>2 days ago</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="card-title">Quick AI Actions</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn" style="width:100%;justify-content:flex-start" onclick="nav('ai');setAIPrompt('Draft a follow-up email for Sarah Mitchell who is looking for a 4-bed house under $850K')">✉️ Draft follow-up email</button>
+        <button class="btn" style="width:100%;justify-content:flex-start" onclick="nav('ai');setAIPrompt('Write a compelling listing description for a 3-bedroom house in Sydney')">🏡 Write listing copy</button>
+        <button class="btn" style="width:100%;justify-content:flex-start" onclick="nav('ai');setAIPrompt('Generate a maintenance work order for a leaking roof at 12 Park Avenue')">🔧 Generate work order</button>
+        <button class="btn" style="width:100%;justify-content:flex-start" onclick="nav('ai');setAIPrompt('What are the current property market trends in Sydney for 2026?')">📈 Market insights</button>
+        <button class="btn" style="width:100%;justify-content:flex-start" onclick="nav('ai');setAIPrompt('Summarise what I should do today based on my 7 open leads and 2 urgent maintenance issues')">📋 Daily briefing</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADS -->
+<div class="page" id="page-leads">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="page-title">Leads</div>
+      <div class="page-sub">Manage and nurture your buyer, seller, and renter leads.</div>
+    </div>
+    <button class="btn primary" onclick="showAddLead()">+ Add Lead</button>
+  </div>
+
+  <div class="card" id="add-lead-form" style="display:none">
+    <div class="card-title">New Lead</div>
+    <div class="grid3">
+      <div class="form-group"><label class="form-label">Full Name</label><input id="lead-name" placeholder="e.g. John Smith"/></div>
+      <div class="form-group"><label class="form-label">Phone</label><input id="lead-phone" placeholder="04XX XXX XXX"/></div>
+      <div class="form-group"><label class="form-label">Email</label><input id="lead-email" placeholder="john@email.com"/></div>
+    </div>
+    <div class="grid3">
+      <div class="form-group"><label class="form-label">Lead Type</label>
+        <select id="lead-type"><option>Buyer</option><option>Seller</option><option>Renter</option><option>Investor</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Budget / Rent</label><input id="lead-budget" placeholder="e.g. $750K or $2,500/mo"/></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select id="lead-status"><option>Hot</option><option>Warm</option><option>Cold</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea id="lead-notes" placeholder="What are they looking for?"></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn primary" onclick="saveLead()">Save Lead</button>
+      <button class="btn" onclick="document.getElementById('add-lead-form').style.display='none'">Cancel</button>
+      <button class="btn" onclick="aiDraftEmail()" style="margin-left:auto">✦ AI Draft Email</button>
+    </div>
+    <div class="ai-output" id="lead-ai-out"></div>
+    <div class="spinner" id="lead-spinner"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">All Leads</div>
+    <div class="table-wrap">
+      <table id="leads-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Contact</th><th>Budget</th><th>Status</th><th>Notes</th><th></th></tr></thead>
+        <tbody id="leads-tbody">
+          <tr><td>Sarah Mitchell</td><td>Buyer</td><td>0412 345 678</td><td>$850K</td><td><span class="status-pill pill-hot">Hot</span></td><td>Wants 4-bed, good schools</td><td><button class="btn sm" onclick="quickAI('Draft a personalised follow-up SMS for buyer Sarah Mitchell who wants a 4-bedroom home under $850K near good schools')">✦ AI</button></td></tr>
+          <tr><td>James Thornton</td><td>Seller</td><td>0423 456 789</td><td>$1.2M</td><td><span class="status-pill pill-warm">Warm</span></td><td>Selling family home, moving interstate</td><td><button class="btn sm" onclick="quickAI('Write a listing pitch email for seller James Thornton who wants $1.2M for his family home')">✦ AI</button></td></tr>
+          <tr><td>Priya Sharma</td><td>Renter</td><td>0434 567 890</td><td>$2,800/mo</td><td><span class="status-pill pill-hot">Hot</span></td><td>2-bed unit, pet friendly</td><td><button class="btn sm" onclick="quickAI('Write a message to renter Priya Sharma about available pet-friendly 2-bed units at $2800/month')">✦ AI</button></td></tr>
+          <tr><td>Daniel Webb</td><td>Buyer</td><td>0445 678 901</td><td>$620K</td><td><span class="status-pill pill-cold">Cold</span></td><td>First home buyer, needs guidance</td><td><button class="btn sm" onclick="quickAI('Write a re-engagement email for first home buyer Daniel Webb who has gone cold. Budget $620K.')">✦ AI</button></td></tr>
+          <tr><td>Lisa Nguyen</td><td>Investor</td><td>0456 789 012</td><td>$2.5M+</td><td><span class="status-pill pill-warm">Warm</span></td><td>Wants high-yield commercial/residential</td><td><button class="btn sm" onclick="quickAI('Write a market briefing email for investor Lisa Nguyen looking for high-yield properties over $2.5M')">✦ AI</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ai-output" id="quick-ai-out"></div>
+  <div class="spinner" id="quick-spinner"></div>
+</div>
+
+<!-- PIPELINE -->
+<div class="page" id="page-pipeline">
+  <div>
+    <div class="page-title">Sales Pipeline</div>
+    <div class="page-sub">Track deals from enquiry to settlement.</div>
+  </div>
+  <div class="pipeline">
+    <div class="pipe-col">
+      <div class="pipe-header">Enquiry <span class="pipe-count">3</span></div>
+      <div class="pipe-card"><div class="pipe-name">Daniel Webb</div><div class="pipe-val">$620K</div><div class="pipe-sub">First home buyer · Buyer</div></div>
+      <div class="pipe-card"><div class="pipe-name">Mark Osei</div><div class="pipe-val">$480K</div><div class="pipe-sub">Investor · Unit</div></div>
+      <div class="pipe-card"><div class="pipe-name">Tracey Liu</div><div class="pipe-val">$350K</div><div class="pipe-sub">Buyer · Townhouse</div></div>
+    </div>
+    <div class="pipe-col">
+      <div class="pipe-header">Inspection <span class="pipe-count">2</span></div>
+      <div class="pipe-card"><div class="pipe-name">Priya Sharma</div><div class="pipe-val">$2,800/mo</div><div class="pipe-sub">Renter · Unit</div></div>
+      <div class="pipe-card"><div class="pipe-name">James Thornton</div><div class="pipe-val">$1.2M</div><div class="pipe-sub">Seller · House</div></div>
+    </div>
+    <div class="pipe-col">
+      <div class="pipe-header">Negotiation <span class="pipe-count">2</span></div>
+      <div class="pipe-card" style="border-color:var(--gold)"><div class="pipe-name">Sarah Mitchell</div><div class="pipe-val">$850K</div><div class="pipe-sub">Buyer · House · HOT</div></div>
+      <div class="pipe-card"><div class="pipe-name">Lisa Nguyen</div><div class="pipe-val">$2.5M+</div><div class="pipe-sub">Investor · Commercial</div></div>
+    </div>
+    <div class="pipe-col">
+      <div class="pipe-header">Under Offer <span class="pipe-count">1</span></div>
+      <div class="pipe-card"><div class="pipe-name">Chen & Wu Family</div><div class="pipe-val">$975K</div><div class="pipe-sub">Buyer · House</div></div>
+    </div>
+    <div class="pipe-col">
+      <div class="pipe-header">Settled <span class="pipe-count">2</span></div>
+      <div class="pipe-card" style="border-color:var(--green)"><div class="pipe-name">Robert Barnes</div><div class="pipe-val">$1.1M ✓</div><div class="pipe-sub">Commission: $22K</div></div>
+      <div class="pipe-card" style="border-color:var(--green)"><div class="pipe-name">Kim Patel</div><div class="pipe-val">$680K ✓</div><div class="pipe-sub">Commission: $13.6K</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LISTINGS -->
+<div class="page" id="page-listings">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="page-title">Listings</div>
+      <div class="page-sub">Your active property listings.</div>
+    </div>
+    <button class="btn primary" onclick="nav('ai');setAIPrompt('Write a compelling real estate listing description for a 4-bedroom house with a pool and ocean views in Sydney, asking $1.45M')">✦ AI Write Listing</button>
+  </div>
+  <div class="listing-grid">
+    <div class="listing-card">
+      <div class="listing-img">🏡<span class="listing-tag tag-sale">For Sale</span></div>
+      <div class="listing-info">
+        <div class="listing-price">$1,450,000</div>
+        <div class="listing-addr">14 Clifftop Ave, Manly NSW 2095</div>
+        <div class="listing-meta"><span>🛏 4 bed</span><span>🚿 2 bath</span><span>🚗 2 car</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img">🏢<span class="listing-tag tag-rent">For Rent</span></div>
+      <div class="listing-info">
+        <div class="listing-price">$2,800/mo</div>
+        <div class="listing-addr">Unit 7/22 Marina Blvd, Pyrmont NSW 2009</div>
+        <div class="listing-meta"><span>🛏 2 bed</span><span>🚿 2 bath</span><span>🐾 Pet OK</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img">🏘️<span class="listing-tag tag-sale">For Sale</span></div>
+      <div class="listing-info">
+        <div class="listing-price">$875,000</div>
+        <div class="listing-addr">3 Wattle St, Parramatta NSW 2150</div>
+        <div class="listing-meta"><span>🛏 3 bed</span><span>🚿 1 bath</span><span>🚗 1 car</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img">🏗️<span class="listing-tag tag-sale">For Sale</span></div>
+      <div class="listing-info">
+        <div class="listing-price">$2,200,000</div>
+        <div class="listing-addr">55 Commercial Rd, Alexandria NSW 2015</div>
+        <div class="listing-meta"><span>🏢 Commercial</span><span>📐 420m²</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img">🏠<span class="listing-tag tag-rent">For Rent</span></div>
+      <div class="listing-info">
+        <div class="listing-price">$3,500/mo</div>
+        <div class="listing-addr">12 Harbour View Dr, Mosman NSW 2088</div>
+        <div class="listing-meta"><span>🛏 4 bed</span><span>🚿 3 bath</span><span>🌊 Views</span></div>
+      </div>
+    </div>
+    <div class="listing-card">
+      <div class="listing-img">🏡<span class="listing-tag tag-sale">For Sale</span></div>
+      <div class="listing-info">
+        <div class="listing-price">$620,000</div>
+        <div class="listing-addr">9 Elm Crescent, Blacktown NSW 2148</div>
+        <div class="listing-meta"><span>🛏 3 bed</span><span>🚿 1 bath</span><span>🚗 1 car</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAINTENANCE -->
+<div class="page" id="page-maintenance">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div>
+      <div class="page-title">Maintenance</div>
+      <div class="page-sub">Track and generate repair work orders for your properties.</div>
+    </div>
+    <button class="btn primary" onclick="nav('ai');setAIPrompt('Generate a professional maintenance work order for a burst pipe under the kitchen sink at 22 Marina Blvd, Pyrmont. Tenant is Priya Sharma. Priority: Urgent.')">✦ AI Generate Work Order</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Open Requests</div>
+    <div class="maint-list">
+      <div class="maint-item">
+        <div class="maint-pri pri-urgent"></div>
+        <div class="maint-content">
+          <div class="maint-title">Burst pipe under kitchen sink</div>
+          <div class="maint-addr">Unit 7/22 Marina Blvd, Pyrmont · Tenant: Priya Sharma</div>
+        </div>
+        <div class="maint-right">
+          <div class="maint-date">URGENT · Today</div>
+          <button class="btn sm" style="margin-top:4px" onclick="quickAI('Generate an urgent maintenance work order for a burst pipe under the kitchen sink at Unit 7/22 Marina Blvd Pyrmont. Tenant Priya Sharma, plumber required.')">✦ Work Order</button>
+        </div>
+      </div>
+      <div class="maint-item">
+        <div class="maint-pri pri-urgent"></div>
+        <div class="maint-content">
+          <div class="maint-title">No hot water — hot water system failed</div>
+          <div class="maint-addr">12 Harbour View Dr, Mosman · Tenant: Chen Family</div>
+        </div>
+        <div class="maint-right">
+          <div class="maint-date">URGENT · Yesterday</div>
+          <button class="btn sm" style="margin-top:4px" onclick="quickAI('Generate a maintenance work order for a failed hot water system at 12 Harbour View Dr Mosman. Tenant Chen Family. Plumber/HWS technician required. Priority: Urgent.')">✦ Work Order</button>
+        </div>
+      </div>
+      <div class="maint-item">
+        <div class="maint-pri pri-high"></div>
+        <div class="maint-content">
+          <div class="maint-title">Roof leaking above master bedroom</div>
+          <div class="maint-addr">14 Clifftop Ave, Manly · Owner: Robert Barnes</div>
+        </div>
+        <div class="maint-right">
+          <div class="maint-date">High · 2 days ago</div>
+          <button class="btn sm" style="margin-top:4px" onclick="quickAI('Generate a maintenance work order for roof leak above the master bedroom at 14 Clifftop Ave Manly. Owner: Robert Barnes. Roofer required. Priority: High.')">✦ Work Order</button>
+        </div>
+      </div>
+      <div class="maint-item">
+        <div class="maint-pri pri-medium"></div>
+        <div class="maint-content">
+          <div class="maint-title">Air conditioning not cooling</div>
+          <div class="maint-addr">3 Wattle St, Parramatta · Tenant: Kim Patel</div>
+        </div>
+        <div class="maint-right">
+          <div class="maint-date">Medium · 4 days ago</div>
+          <button class="btn sm" style="margin-top:4px" onclick="quickAI('Generate a maintenance work order for faulty air conditioning at 3 Wattle St Parramatta. Tenant Kim Patel. HVAC technician required.')">✦ Work Order</button>
+        </div>
+      </div>
+      <div class="maint-item">
+        <div class="maint-pri pri-low"></div>
+        <div class="maint-content">
+          <div class="maint-title">Broken fence panel — rear garden</div>
+          <div class="maint-addr">9 Elm Crescent, Blacktown · Owner: James Thornton</div>
+        </div>
+        <div class="maint-right">
+          <div class="maint-date">Low · 1 week ago</div>
+          <button class="btn sm" style="margin-top:4px" onclick="quickAI('Generate a maintenance work order for a broken fence panel in the rear garden at 9 Elm Crescent Blacktown. Owner James Thornton. Carpenter required.')">✦ Work Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ai-output" id="quick-ai-out2"></div>
+  <div class="spinner" id="quick-spinner2"></div>
+</div>
+
+<!-- AI ASSISTANT -->
+<div class="page" id="page-ai">
+  <div>
+    <div class="page-title">AI Assistant ✦</div>
+    <div class="page-sub">Your intelligent co-agent — write emails, listings, work orders, market reports and more.</div>
+  </div>
+  <div class="card" style="flex:1">
+    <div class="card-title">Chat with MyAgentCRM AI</div>
+    <div class="chat-wrap" id="chat-messages">
+      <div class="msg ai">
+        <div class="msg-avatar ai">✦</div>
+        <div class="msg-bubble">G'day! I'm your MyAgentCRM AI co-agent. I can write listing copy, draft emails to leads, generate maintenance work orders, give market insights, and more. What do you need?</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input id="chat-input" placeholder="Ask me anything about your properties, leads, or market..." onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="btn primary" onclick="sendChat()">Send ↗</button>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn sm" onclick="setAIPrompt('Write a compelling listing description for a 3-bed house in Mosman Sydney with harbour views, $1.8M')">📝 Listing copy</button>
+      <button class="btn sm" onclick="setAIPrompt('Draft a warm follow-up email to a buyer lead who inspected a property 3 days ago but hasnt responded')">✉️ Follow-up email</button>
+      <button class="btn sm" onclick="setAIPrompt('Generate a professional maintenance work order for a leaking roof in Sydney')">🔧 Work order</button>
+      <button class="btn sm" onclick="setAIPrompt('What are the top property investment opportunities in Sydney in 2026?')">📈 Market insights</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="page" id="page-docs">
+  <div>
+    <div class="page-title">Documents</div>
+    <div class="page-sub">AI-generated letters, forms, and contracts.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Generate Document with AI</div>
+    <div class="grid2" style="margin-bottom:1rem">
+      <div class="form-group">
+        <label class="form-label">Document Type</label>
+        <select id="doc-type">
+          <option>Rental Reference Letter</option>
+          <option>Maintenance Work Order</option>
+          <option>Entry Notice (NSW)</option>
+          <option>Lease Renewal Letter</option>
+          <option>Rent Increase Notice</option>
+          <option>Property Appraisal Letter</option>
+          <option>Open Home Invitation</option>
+          <option>Vendor Update Letter</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Property Address</label>
+        <input id="doc-addr" placeholder="e.g. 22 Marina Blvd, Pyrmont NSW 2009"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Key Details (names, dates, specifics)</label>
+      <textarea id="doc-details" placeholder="e.g. Tenant: Priya Sharma, tenancy period 12 months, rent $2,800/month, no issues during tenancy..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn primary" onclick="generateDoc()">✦ Generate Document</button>
+      <div class="spinner" id="doc-spinner"></div>
+    </div>
+    <div class="ai-output" id="doc-output" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div>
+    <div class="page-title">Settings</div>
+    <div class="page-sub">Your agency profile and subscription.</div>
+  </div>
+  <div class="card-row">
+    <div class="card" style="flex:1">
+      <div class="card-title">Agency Profile</div>
+      <div class="form-group"><label class="form-label">Agency Name</label><input value="Sydney Premier Realty"/></div>
+      <div class="form-group"><label class="form-label">Licence Number</label><input value="NSW-RE-284751"/></div>
+      <div class="form-group"><label class="form-label">Phone</label><input value="02 9123 4567"/></div>
+      <div class="form-group"><label class="form-label">Email</label><input value="agent@myagentcrm.au"/></div>
+      <button class="btn primary">Save Changes</button>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="card-title">Subscription — MyAgentCRM AI Pro</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem">
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);font-weight:700">$49<span style="font-size:1rem;color:var(--text2);font-family:'Outfit',sans-serif;font-weight:400">/month</span></div>
+        <div style="font-size:0.82rem;color:var(--text3);margin-top:4px">AI Pro — All features included. No per-user fees.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:0.85rem;color:var(--text2)">
+        <div>✅ Unlimited leads & listings</div>
+        <div>✅ AI email & listing writer</div>
+        <div>✅ AI maintenance work orders</div>
+        <div>✅ AI document generator</div>
+        <div>✅ Pipeline CRM</div>
+        <div>✅ Australian compliance docs</div>
+        <div>✅ No setup fees. Cancel anytime.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick')?.includes("'" + page + "'")) n.classList.add('active');
+  });
+}
+
+function showAddLead() {
+  const f = document.getElementById('add-lead-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveLead() {
+  const name = document.getElementById('lead-name').value.trim();
+  if (!name) { alert('Enter a name'); return; }
+  const type = document.getElementById('lead-type').value;
+  const phone = document.getElementById('lead-phone').value;
+  const budget = document.getElementById('lead-budget').value;
+  const status = document.getElementById('lead-status').value;
+  const notes = document.getElementById('lead-notes').value;
+  const pillClass = status === 'Hot' ? 'pill-hot' : status === 'Warm' ? 'pill-warm' : 'pill-cold';
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${name}</td><td>${type}</td><td>${phone}</td><td>${budget}</td><td><span class="status-pill ${pillClass}">${status}</span></td><td>${notes}</td><td><button class="btn sm" onclick="quickAI('Draft a personalised message for ${type} lead ${name} with budget ${budget}')">✦ AI</button></td>`;
+  document.getElementById('leads-tbody').appendChild(row);
+  document.getElementById('add-lead-form').style.display = 'none';
+}
+
+async function aiDraftEmail() {
+  const name = document.getElementById('lead-name').value || 'the lead';
+  const type = document.getElementById('lead-type').value;
+  const budget = document.getElementById('lead-budget').value;
+  const notes = document.getElementById('lead-notes').value;
+  const out = document.getElementById('lead-ai-out');
+  const spin = document.getElementById('lead-spinner');
+  out.classList.remove('visible'); spin.classList.add('visible');
+  const text = await callClaude(`Write a short, warm, professional real estate follow-up email for a ${type} lead named ${name}. Budget: ${budget}. Notes: ${notes}. Sign off as "MyAgentCRM Agent". Keep it under 120 words.`);
+  out.textContent = text; out.classList.add('visible'); spin.classList.remove('visible');
+}
+
+async function quickAI(prompt) {
+  const out = document.getElementById('quick-ai-out') || document.getElementById('quick-ai-out2');
+  const spin = document.getElementById('quick-spinner') || document.getElementById('quick-spinner2');
+  // detect active page
+  const activePage = document.querySelector('.page.active').id;
+  const outId = activePage === 'page-maintenance' ? 'quick-ai-out2' : 'quick-ai-out';
+  const spinId = activePage === 'page-maintenance' ? 'quick-spinner2' : 'quick-spinner';
+  const outEl = document.getElementById(outId);
+  const spinEl = document.getElementById(spinId);
+  outEl.classList.remove('visible'); spinEl.classList.add('visible');
+  const text = await callClaude(prompt + '\n\nBe professional, concise, and Australian-context aware.');
+  outEl.textContent = text; outEl.classList.add('visible'); spinEl.classList.remove('visible');
+  nav(activePage.replace('page-',''));
+}
+
+// CHAT
+const chatHistory = [];
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addChatMsg('user', msg);
+  chatHistory.push({ role: 'user', content: msg });
+  addChatMsg('ai', '…');
+  const lastAI = document.querySelector('#chat-messages .msg.ai:last-child .msg-bubble');
+  const text = await callClaude(null, chatHistory);
+  lastAI.textContent = text;
+  chatHistory.push({ role: 'assistant', content: text });
+}
+
+function addChatMsg(role, text) {
+  const wrap = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = `<div class="msg-avatar ${role}">${role === 'ai' ? '✦' : 'ME'}</div><div class="msg-bubble">${text}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function setAIPrompt(prompt) {
+  nav('ai');
+  document.getElementById('chat-input').value = prompt;
+  setTimeout(() => sendChat(), 100);
+}
+
+// DOCS
+async function generateDoc() {
+  const type = document.getElementById('doc-type').value;
+  const addr = document.getElementById('doc-addr').value || 'the property';
+  const details = document.getElementById('doc-details').value;
+  const out = document.getElementById('doc-output');
+  const spin = document.getElementById('doc-spinner');
+  out.classList.remove('visible'); spin.classList.add('visible');
+  const prompt = `Generate a professional Australian real estate "${type}" document for the property at ${addr}. Details: ${details || 'use standard details'}. Format it as a complete, ready-to-use document with all standard sections. Be professional and compliant with NSW real estate standards.`;
+  const text = await callClaude(prompt);
+  out.textContent = text; out.classList.add('visible'); spin.classList.remove('visible');
+}
+
+// CLAUDE API
+async function callClaude(prompt, history) {
+  try {
+    const messages = history || [{ role: 'user', content: prompt }];
+    const sys = 'You are MyAgentCRM, an expert AI assistant for Australian real estate agents. You specialise in NSW/Australian property law, real estate workflows, maintenance work orders, listing copy, client emails, and market analysis. Be concise, professional, and practical. Use Australian spelling and context.';
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: sys,
+        messages: messages
+      })
+    });
+    const data = await resp.json();
+    return (data.content || []).map(b => b.text || '').join('');
+  } catch(e) {
+    return 'Something went wrong. Please try again.';
+  }
+}
+</script>
+</body>
+</html>
