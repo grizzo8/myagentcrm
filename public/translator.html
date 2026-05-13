@@ -7,333 +7,89 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --bg:#06080F;
-  --surface:#0D1120;
-  --surface2:#141929;
-  --surface3:#1C2338;
-  --border:#1F2940;
-  --border2:#2A3650;
-  --accent:#00D4FF;
-  --accent2:#0099CC;
-  --green:#00F5A0;
-  --red:#FF4560;
-  --gold:#FFB800;
-  --text:#E8EDF8;
-  --text2:#8A9BB8;
-  --text3:#4A5870;
-  --radius:8px;
-  --radius-lg:16px;
-  --radius-xl:24px;
+  --bg:#06080F;--surface:#0D1120;--surface2:#141929;--surface3:#1C2338;
+  --border:#1F2940;--border2:#2A3650;--accent:#00D4FF;--green:#00F5A0;
+  --red:#FF4560;--gold:#FFB800;--text:#E8EDF8;--text2:#8A9BB8;--text3:#4A5870;
+  --radius:8px;--radius-lg:16px;--radius-xl:24px;
 }
-
 html{scroll-behavior:smooth}
-body{
-  font-family:'Space Grotesk',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
-}
-
-/* BACKGROUND EFFECT */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0,212,255,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,245,160,0.04) 0%, transparent 60%);
-  pointer-events:none;z-index:0;
-}
-
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:relative;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(0,212,255,0.06) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(0,245,160,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
 .app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
-
-/* HEADER */
-header{
-  padding:1.5rem 2rem;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(20px);
-  background:rgba(6,8,15,0.8);
-  position:sticky;top:0;z-index:10;
-}
+header{padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(6,8,15,0.8);position:sticky;top:0;z-index:10;}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-icon{
-  width:36px;height:36px;border-radius:10px;
-  background:linear-gradient(135deg,var(--accent),var(--green));
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;
-}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;font-size:1rem;}
 .logo-text{font-family:'Instrument Serif',serif;font-size:1.4rem;color:var(--text)}
 .logo-text span{color:var(--accent)}
-.header-right{display:flex;align-items:center;gap:12px}
-.powered-by{
-  font-family:'JetBrains Mono',monospace;
-  font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--text3);
-  background:var(--surface2);border:1px solid var(--border);
-  padding:5px 10px;border-radius:4px;
-}
-
-/* MAIN LAYOUT */
+.powered-by{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border:1px solid var(--border);padding:5px 10px;border-radius:4px;}
 .main{flex:1;padding:2rem;max-width:1100px;margin:0 auto;width:100%}
-
-/* LANGUAGE SELECTOR */
-.lang-bar{
-  display:grid;grid-template-columns:1fr auto 1fr;
-  align-items:center;gap:1rem;margin-bottom:2rem;
-}
+.lang-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;margin-bottom:2rem;}
 .lang-select-wrap{display:flex;flex-direction:column;gap:6px}
 .lang-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
-.lang-select{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:0.95rem;font-weight:500;
-  color:var(--text);
-  background:var(--surface2);
-  border:1px solid var(--border2);
-  border-radius:var(--radius);
-  padding:10px 14px;
-  width:100%;outline:none;cursor:pointer;
-  appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A9BB8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;
-  padding-right:36px;
-  transition:border-color 0.2s;
-}
+.lang-select{font-family:'Space Grotesk',sans-serif;font-size:0.95rem;font-weight:500;color:var(--text);background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;width:100%;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A9BB8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;transition:border-color 0.2s;}
 .lang-select:focus{border-color:var(--accent)}
 .lang-select option{background:var(--surface2)}
-
-.swap-btn{
-  width:44px;height:44px;border-radius:50%;
-  background:var(--surface2);border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:1.1rem;
-  transition:all 0.2s;color:var(--text2);
-  margin-top:22px;
-  flex-shrink:0;
-}
+.swap-btn{width:44px;height:44px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all 0.2s;color:var(--text2);margin-top:22px;flex-shrink:0;}
 .swap-btn:hover{border-color:var(--accent);color:var(--accent);transform:rotate(180deg)}
-
-/* PANELS */
 .panels{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
-
-.panel{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-xl);
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  min-height:280px;
-  transition:border-color 0.3s;
-  position:relative;
-}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;display:flex;flex-direction:column;min-height:280px;transition:border-color 0.3s;position:relative;}
 .panel.active-panel{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,212,255,0.1),0 8px 32px rgba(0,212,255,0.08)}
-.panel.translated-panel{border-color:rgba(0,245,160,0.3);box-shadow:0 0 0 1px rgba(0,245,160,0.05)}
-
-.panel-header{
-  padding:1rem 1.25rem;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.panel-title{
-  font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--text3);display:flex;align-items:center;gap:6px;
-}
+.panel.translated-panel{border-color:rgba(0,245,160,0.3)}
+.panel-header{padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
+.panel-title{font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:6px;}
 .panel-dot{width:6px;height:6px;border-radius:50%;background:var(--text3)}
 .panel.active-panel .panel-dot{background:var(--accent);box-shadow:0 0 6px var(--accent);animation:dotPulse 1.5s infinite}
 .panel.translated-panel .panel-dot{background:var(--green)}
 @keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
-
 .panel-actions{display:flex;gap:6px}
-.panel-btn{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:0.72rem;font-weight:500;
-  padding:4px 10px;border-radius:4px;
-  border:1px solid var(--border2);background:var(--surface2);
-  color:var(--text2);cursor:pointer;transition:all 0.15s;
-}
+.panel-btn{font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:500;padding:4px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 0.15s;}
 .panel-btn:hover{border-color:var(--accent);color:var(--accent)}
-
-.panel-body{
-  flex:1;padding:1.25rem;
-  font-size:1rem;line-height:1.7;color:var(--text);
-  position:relative;overflow-y:auto;
-}
-.panel-placeholder{
-  color:var(--text3);font-style:italic;font-size:0.9rem;
-  position:absolute;top:1.25rem;left:1.25rem;
-  pointer-events:none;
-}
-
-/* TRANSCRIPT TEXT */
-.transcript-text{
-  min-height:60px;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
+.panel-body{flex:1;padding:1.25rem;font-size:1rem;line-height:1.7;color:var(--text);position:relative;overflow-y:auto;}
+.panel-placeholder{color:var(--text3);font-style:italic;font-size:0.9rem;position:absolute;top:1.25rem;left:1.25rem;pointer-events:none;}
+.transcript-text{min-height:60px;white-space:pre-wrap;word-break:break-word;}
 .interim-text{color:var(--text2);opacity:0.7;font-style:italic}
-
-/* WAVEFORM */
-.waveform{
-  display:flex;align-items:center;justify-content:center;gap:3px;
-  height:36px;margin-bottom:0.75rem;
-}
-.wave-bar{
-  width:3px;border-radius:3px;
-  background:var(--accent);
-  height:4px;transition:height 0.1s ease;
-  opacity:0.5;
-}
+.waveform{display:flex;align-items:center;justify-content:center;gap:3px;height:36px;margin-bottom:0.75rem;}
+.wave-bar{width:3px;border-radius:3px;background:var(--accent);height:4px;transition:height 0.1s ease;opacity:0.5;}
 .recording .wave-bar{opacity:1;animation:wave 0.8s ease-in-out infinite}
-.wave-bar:nth-child(1){animation-delay:0s}
-.wave-bar:nth-child(2){animation-delay:0.1s}
-.wave-bar:nth-child(3){animation-delay:0.2s}
-.wave-bar:nth-child(4){animation-delay:0.3s}
-.wave-bar:nth-child(5){animation-delay:0.2s}
-.wave-bar:nth-child(6){animation-delay:0.1s}
-.wave-bar:nth-child(7){animation-delay:0s}
-@keyframes wave{
-  0%,100%{height:4px}
-  50%{height:28px}
-}
-
-/* RECORD BUTTON */
-.record-section{
-  display:flex;flex-direction:column;align-items:center;
-  gap:1rem;padding:1.5rem 0;
-}
-.record-btn{
-  width:80px;height:80px;border-radius:50%;
-  border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.8rem;
-  position:relative;
-  transition:transform 0.2s;
-  background:linear-gradient(135deg,var(--accent),#0099CC);
-  box-shadow:0 0 0 0 rgba(0,212,255,0.3);
-}
+.wave-bar:nth-child(1){animation-delay:0s}.wave-bar:nth-child(2){animation-delay:0.1s}.wave-bar:nth-child(3){animation-delay:0.2s}.wave-bar:nth-child(4){animation-delay:0.3s}.wave-bar:nth-child(5){animation-delay:0.2s}.wave-bar:nth-child(6){animation-delay:0.1s}.wave-bar:nth-child(7){animation-delay:0s}
+@keyframes wave{0%,100%{height:4px}50%{height:28px}}
+.record-section{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1.5rem 0;}
+.record-btn{width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:relative;transition:transform 0.2s;background:linear-gradient(135deg,var(--accent),#0099CC);box-shadow:0 0 0 0 rgba(0,212,255,0.3);}
 .record-btn:hover{transform:scale(1.05)}
-.record-btn.recording{
-  background:linear-gradient(135deg,var(--red),#CC0033);
-  box-shadow:0 0 0 0 rgba(255,69,96,0.4);
-  animation:recordPulse 1.5s infinite;
-}
-@keyframes recordPulse{
-  0%{box-shadow:0 0 0 0 rgba(255,69,96,0.4)}
-  70%{box-shadow:0 0 0 20px rgba(255,69,96,0)}
-  100%{box-shadow:0 0 0 0 rgba(255,69,96,0)}
-}
-.record-btn.loading{
-  background:linear-gradient(135deg,var(--gold),#CC9400);
-  animation:spin 1s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.record-status{
-  font-size:0.82rem;font-weight:500;color:var(--text2);
-  letter-spacing:0.03em;text-align:center;
-}
+.record-btn.recording{background:linear-gradient(135deg,var(--red),#CC0033);animation:recordPulse 1.5s infinite;}
+@keyframes recordPulse{0%{box-shadow:0 0 0 0 rgba(255,69,96,0.4)}70%{box-shadow:0 0 0 20px rgba(255,69,96,0)}100%{box-shadow:0 0 0 0 rgba(255,69,96,0)}}
+.record-status{font-size:0.82rem;font-weight:500;color:var(--text2);letter-spacing:0.03em;text-align:center;}
 .record-status.active{color:var(--red)}
-.record-timer{
-  font-family:'JetBrains Mono',monospace;
-  font-size:0.75rem;color:var(--text3);
-}
-
-/* HISTORY */
-.history-section{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-xl);
-  overflow:hidden;
-}
-.history-header{
-  padding:1rem 1.5rem;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-}
+.record-timer{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text3);}
+.history-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;}
+.history-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .history-title{font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
-.clear-btn{
-  font-size:0.72rem;color:var(--text3);cursor:pointer;
-  background:none;border:none;font-family:'Space Grotesk',sans-serif;
-  transition:color 0.15s;padding:2px 8px;border-radius:4px;
-}
+.clear-btn{font-size:0.72rem;color:var(--text3);cursor:pointer;background:none;border:none;font-family:'Space Grotesk',sans-serif;transition:color 0.15s;padding:2px 8px;border-radius:4px;}
 .clear-btn:hover{color:var(--red)}
-
 .history-list{max-height:300px;overflow-y:auto}
-.history-empty{
-  padding:2rem;text-align:center;
-  color:var(--text3);font-size:0.85rem;font-style:italic;
-}
-.history-item{
-  padding:1rem 1.5rem;
-  border-bottom:1px solid var(--border);
-  display:grid;grid-template-columns:1fr 1fr auto;
-  gap:1rem;align-items:start;
-  transition:background 0.15s;
-}
+.history-empty{padding:2rem;text-align:center;color:var(--text3);font-size:0.85rem;font-style:italic;}
+.history-item{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr auto;gap:1rem;align-items:start;transition:background 0.15s;}
 .history-item:hover{background:var(--surface2)}
 .history-item:last-child{border-bottom:none}
 .history-original{font-size:0.88rem;color:var(--text2)}
 .history-translated{font-size:0.88rem;color:var(--text)}
-.history-lang{
-  font-family:'JetBrains Mono',monospace;
-  font-size:0.65rem;color:var(--text3);
-  white-space:nowrap;padding-top:2px;
-  display:flex;flex-direction:column;gap:4px;align-items:flex-end;
-}
-.history-lang-tag{
-  background:var(--surface3);border:1px solid var(--border);
-  padding:2px 6px;border-radius:3px;
-  cursor:pointer;transition:all 0.15s;
-}
+.history-lang{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text3);white-space:nowrap;padding-top:2px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;}
+.history-lang-tag{background:var(--surface3);border:1px solid var(--border);padding:2px 6px;border-radius:3px;cursor:pointer;transition:all 0.15s;}
 .history-lang-tag:hover{border-color:var(--accent);color:var(--accent)}
-
-/* STATUS BAR */
-.status-bar{
-  display:flex;align-items:center;gap:8px;
-  padding:0.6rem 1rem;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:var(--radius);margin-bottom:1.5rem;
-  font-size:0.78rem;color:var(--text3);
-  font-family:'JetBrains Mono',monospace;
-}
+.status-bar{display:flex;align-items:center;gap:8px;padding:0.6rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.5rem;font-size:0.78rem;color:var(--text3);font-family:'JetBrains Mono',monospace;}
 .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
 .status-dot.error{background:var(--red)}
 .status-dot.loading{background:var(--gold);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-
-/* SPEAK BTN */
-.speak-btn{
-  display:inline-flex;align-items:center;gap:5px;
-  font-family:'Space Grotesk',sans-serif;
-  font-size:0.72rem;font-weight:500;
-  padding:4px 10px;border-radius:4px;
-  border:1px solid rgba(0,245,160,0.3);
-  background:rgba(0,245,160,0.05);
-  color:var(--green);cursor:pointer;transition:all 0.15s;
-}
+.speak-btn{display:inline-flex;align-items:center;gap:5px;font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:500;padding:4px 10px;border-radius:4px;border:1px solid rgba(0,245,160,0.3);background:rgba(0,245,160,0.05);color:var(--green);cursor:pointer;transition:all 0.15s;}
 .speak-btn:hover{background:rgba(0,245,160,0.12);border-color:var(--green)}
-
-/* SCROLLBAR */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
-
-@media(max-width:700px){
-  .panels{grid-template-columns:1fr}
-  .lang-bar{grid-template-columns:1fr auto 1fr}
-  .history-item{grid-template-columns:1fr;gap:0.5rem}
-  .history-lang{flex-direction:row;align-items:center}
-  header{padding:1rem}
-  .main{padding:1rem}
-}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+@media(max-width:700px){.panels{grid-template-columns:1fr}.history-item{grid-template-columns:1fr;gap:0.5rem}.history-lang{flex-direction:row;align-items:center}header{padding:1rem}.main{padding:1rem}}
 </style>
 </head>
 <body>
 <div class="app">
-
 <header>
   <div class="logo">
     <div class="logo-icon">🌐</div>
@@ -343,16 +99,11 @@ header{
     <div class="powered-by">Powered by Claude AI</div>
   </div>
 </header>
-
 <div class="main">
-
-  <!-- STATUS BAR -->
   <div class="status-bar" id="statusBar">
     <div class="status-dot" id="statusDot"></div>
     <span id="statusText">Ready — select your languages and press the microphone to begin</span>
   </div>
-
-  <!-- LANGUAGE SELECTOR -->
   <div class="lang-bar">
     <div class="lang-select-wrap">
       <div class="lang-label">🎤 I speak</div>
@@ -381,9 +132,7 @@ header{
         <option value="pl-PL">🇵🇱 Polish</option>
       </select>
     </div>
-
     <button class="swap-btn" onclick="swapLanguages()" title="Swap languages">⇄</button>
-
     <div class="lang-select-wrap">
       <div class="lang-label">🔊 Translate to</div>
       <select class="lang-select" id="toLang">
@@ -412,17 +161,10 @@ header{
       </select>
     </div>
   </div>
-
-  <!-- PANELS -->
   <div class="panels">
-
-    <!-- LEFT: SPEECH INPUT -->
     <div class="panel" id="leftPanel">
       <div class="panel-header">
-        <div class="panel-title">
-          <div class="panel-dot"></div>
-          Your speech
-        </div>
+        <div class="panel-title"><div class="panel-dot"></div>Your speech</div>
         <div class="panel-actions">
           <button class="panel-btn" onclick="copyText('originalText')">Copy</button>
           <button class="panel-btn" onclick="clearOriginal()">Clear</button>
@@ -430,50 +172,33 @@ header{
       </div>
       <div class="panel-body">
         <div class="waveform" id="waveform">
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
         </div>
         <div class="transcript-text" id="originalText"></div>
         <div class="panel-placeholder" id="originalPlaceholder">Press the mic and start speaking…</div>
       </div>
     </div>
-
-    <!-- RIGHT: TRANSLATION OUTPUT -->
     <div class="panel translated-panel" id="rightPanel">
       <div class="panel-header">
-        <div class="panel-title">
-          <div class="panel-dot"></div>
-          Translation
-        </div>
+        <div class="panel-title"><div class="panel-dot"></div>Translation</div>
         <div class="panel-actions">
-          <button class="speak-btn" onclick="speakTranslation()" id="speakBtn">🔊 Speak</button>
+          <button class="speak-btn" onclick="speakTranslation()">🔊 Speak</button>
           <button class="panel-btn" onclick="copyText('translatedText')">Copy</button>
         </div>
       </div>
       <div class="panel-body">
         <div class="transcript-text" id="translatedText"></div>
         <div class="panel-placeholder" id="translatedPlaceholder">Translation will appear here…</div>
-        <div id="translatingIndicator" style="display:none;color:var(--text3);font-size:0.85rem;font-style:italic">
-          ✦ Translating…
-        </div>
+        <div id="translatingIndicator" style="display:none;color:var(--text3);font-size:0.85rem;font-style:italic">✦ Translating…</div>
       </div>
     </div>
-
   </div>
-
-  <!-- RECORD SECTION -->
   <div class="record-section">
     <button class="record-btn" id="recordBtn" onclick="toggleRecording()">🎤</button>
     <div class="record-status" id="recordStatus">Tap to start speaking</div>
     <div class="record-timer" id="recordTimer"></div>
   </div>
-
-  <!-- HISTORY -->
   <div class="history-section">
     <div class="history-header">
       <div class="history-title">📋 Translation history</div>
@@ -483,26 +208,17 @@ header{
       <div class="history-empty" id="historyEmpty">No translations yet — start speaking!</div>
     </div>
   </div>
-
 </div>
 </div>
-
 <script>
-// ─── YOUR API KEY — REPLACE THE TEXT BETWEEN THE QUOTES ───
-const API_KEY='YOUR-KEY-IS-IN-CLOUDFLARE';
-
-// ─── STATE ───
 let recognition = null;
 let isRecording = false;
 let timerInterval = null;
 let seconds = 0;
 let finalTranscript = '';
-let interimTranscript = '';
 let translateTimeout = null;
 let history = [];
-let currentTranslation = '';
 
-// ─── LANGUAGE NAMES ───
 const langNames = {
   'en-AU':'English','en-US':'English','en-GB':'English',
   'zh-CN':'Chinese (Mandarin)','zh-TW':'Chinese (Traditional)',
@@ -515,40 +231,34 @@ const langNames = {
 };
 
 const langVoices = {
-  'zh-CN':'zh-CN','zh-TW':'zh-TW','ar-SA':'ar-SA',
-  'vi-VN':'vi-VN','el-GR':'el-GR','it-IT':'it-IT',
-  'es-ES':'es-ES','fr-FR':'fr-FR','de-DE':'de-DE',
-  'pt-BR':'pt-BR','hi-IN':'hi-IN','ja-JP':'ja-JP',
-  'ko-KR':'ko-KR','id-ID':'id-ID','tl-PH':'fil-PH',
-  'th-TH':'th-TH','ru-RU':'ru-RU','tr-TR':'tr-TR',
-  'pl-PL':'pl-PL','en-AU':'en-AU','en-US':'en-US','en-GB':'en-GB'
+  'zh-CN':'zh-CN','zh-TW':'zh-TW','ar-SA':'ar-SA','vi-VN':'vi-VN',
+  'el-GR':'el-GR','it-IT':'it-IT','es-ES':'es-ES','fr-FR':'fr-FR',
+  'de-DE':'de-DE','pt-BR':'pt-BR','hi-IN':'hi-IN','ja-JP':'ja-JP',
+  'ko-KR':'ko-KR','id-ID':'id-ID','tl-PH':'fil-PH','th-TH':'th-TH',
+  'ru-RU':'ru-RU','tr-TR':'tr-TR','pl-PL':'pl-PL',
+  'en-AU':'en-AU','en-US':'en-US','en-GB':'en-GB'
 };
 
-// ─── INIT ───
 function setStatus(msg, type='ready'){
   document.getElementById('statusText').textContent = msg;
   const dot = document.getElementById('statusDot');
   dot.className = 'status-dot' + (type==='error'?' error':type==='loading'?' loading':'');
 }
 
-// ─── SWAP LANGUAGES ───
 function swapLanguages(){
   const from = document.getElementById('fromLang');
   const to = document.getElementById('toLang');
   const tmp = from.value;
   from.value = to.value;
   to.value = tmp;
-  // swap text too
   const origText = document.getElementById('originalText').textContent;
   const transText = document.getElementById('translatedText').textContent;
   document.getElementById('originalText').textContent = transText;
   document.getElementById('translatedText').textContent = origText;
   finalTranscript = transText;
-  currentTranslation = origText;
   updatePlaceholders();
 }
 
-// ─── RECORDING ───
 function toggleRecording(){
   if(isRecording) stopRecording();
   else startRecording();
@@ -556,12 +266,11 @@ function toggleRecording(){
 
 function startRecording(){
   if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
-    setStatus('Your browser does not support speech recognition. Please use Chrome.','error');
+    setStatus('Please use Google Chrome for speech recognition','error');
     return;
   }
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRecognition();
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = document.getElementById('fromLang').value;
@@ -580,38 +289,24 @@ function startRecording(){
   };
 
   recognition.onresult = (e) => {
-    interimTranscript = '';
+    let interim = '';
     for(let i = e.resultIndex; i < e.results.length; i++){
-      if(e.results[i].isFinal){
-        finalTranscript += e.results[i][0].transcript + ' ';
-      } else {
-        interimTranscript += e.results[i][0].transcript;
-      }
+      if(e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
     }
-    const display = finalTranscript + (interimTranscript ? '<span class="interim-text">' + interimTranscript + '</span>' : '');
-    document.getElementById('originalText').innerHTML = display;
+    document.getElementById('originalText').innerHTML = finalTranscript + (interim ? '<span class="interim-text">'+interim+'</span>' : '');
     updatePlaceholders();
-
-    // auto translate after pause
     clearTimeout(translateTimeout);
-    if(finalTranscript.trim()){
-      translateTimeout = setTimeout(() => translateText(finalTranscript.trim()), 1200);
-    }
+    if(finalTranscript.trim()) translateTimeout = setTimeout(() => translateText(finalTranscript.trim()), 1200);
   };
 
   recognition.onerror = (e) => {
-    if(e.error === 'not-allowed'){
-      setStatus('Microphone access denied — please allow microphone in your browser settings','error');
-    } else {
-      setStatus('Speech recognition error: ' + e.error,'error');
-    }
+    if(e.error === 'not-allowed') setStatus('Microphone blocked — click the lock icon in address bar and allow access','error');
+    else setStatus('Error: ' + e.error,'error');
     stopRecording();
   };
 
-  recognition.onend = () => {
-    if(isRecording) recognition.start(); // keep going
-  };
-
+  recognition.onend = () => { if(isRecording) recognition.start(); };
   recognition.start();
 }
 
@@ -625,29 +320,25 @@ function stopRecording(){
   document.getElementById('waveform').className = 'waveform';
   document.getElementById('leftPanel').className = 'panel';
   stopTimer();
-  setStatus('Recording stopped — translation complete');
-
-  if(finalTranscript.trim()){
-    translateText(finalTranscript.trim());
-  }
+  setStatus('Recording stopped');
+  if(finalTranscript.trim()) translateText(finalTranscript.trim());
 }
 
-// ─── TIMER ───
 function startTimer(){
   seconds = 0;
   timerInterval = setInterval(() => {
     seconds++;
     const m = Math.floor(seconds/60).toString().padStart(2,'0');
     const s = (seconds%60).toString().padStart(2,'0');
-    document.getElementById('recordTimer').textContent = m + ':' + s;
-  }, 1000);
+    document.getElementById('recordTimer').textContent = m+':'+s;
+  },1000);
 }
+
 function stopTimer(){
   clearInterval(timerInterval);
   document.getElementById('recordTimer').textContent = '';
 }
 
-// ─── TRANSLATE ───
 async function translateText(text){
   if(!text.trim()) return;
   const toLang = document.getElementById('toLang').value;
@@ -658,32 +349,28 @@ async function translateText(text){
   document.getElementById('translatingIndicator').style.display = 'block';
   document.getElementById('translatedText').textContent = '';
   updatePlaceholders();
-  setStatus('Translating to ' + toName + '…', 'loading');
+  setStatus('Translating to ' + toName + '…','loading');
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
         messages: [{
           role: 'user',
-          content: `Translate the following text from ${fromName} to ${toName}. Return ONLY the translated text with no explanation, no quotes, no preamble. Just the translation.\n\nText to translate:\n${text}`
+          content: 'Translate the following text from ' + fromName + ' to ' + toName + '. Return ONLY the translated text with no explanation, no quotes, no preamble. Just the translation.\n\nText to translate:\n' + text
         }]
       })
     });
 
     const data = await resp.json();
     const translation = (data.content || []).map(b => b.text || '').join('').trim();
-
     document.getElementById('translatingIndicator').style.display = 'none';
     document.getElementById('translatedText').textContent = translation;
-    currentTranslation = translation;
     updatePlaceholders();
     setStatus('✓ Translation complete — ' + fromName + ' → ' + toName);
-
-    // add to history
     addToHistory(text, translation, fromName, toName, toLang);
 
   } catch(e) {
@@ -692,13 +379,10 @@ async function translateText(text){
   }
 }
 
-// ─── SPEAK TRANSLATION ───
 function speakTranslation(){
   const text = document.getElementById('translatedText').textContent;
   if(!text) return;
-  const toLang = document.getElementById('toLang').value;
-  const voiceLang = langVoices[toLang] || toLang;
-  speakText(text, voiceLang);
+  speakText(text, langVoices[document.getElementById('toLang').value] || 'en');
 }
 
 function speakText(text, lang){
@@ -706,39 +390,26 @@ function speakText(text, lang){
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = lang;
   utter.rate = 0.9;
-  utter.pitch = 1;
-
-  // try to find a matching voice
   const voices = window.speechSynthesis.getVoices();
   const match = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
   if(match) utter.voice = match;
-
   window.speechSynthesis.speak(utter);
   setStatus('🔊 Speaking translation…');
   utter.onend = () => setStatus('✓ Done speaking');
 }
 
-// ─── HISTORY ───
 function addToHistory(original, translated, fromName, toName, toLang){
-  history.unshift({ original, translated, fromName, toName, toLang, time: new Date() });
+  history.unshift({original, translated, fromName, toName, toLang});
   renderHistory();
 }
 
 function renderHistory(){
   const list = document.getElementById('historyList');
   const empty = document.getElementById('historyEmpty');
-
-  if(history.length === 0){
-    empty.style.display = 'block';
-    // remove all items
-    list.querySelectorAll('.history-item').forEach(el => el.remove());
-    return;
-  }
-
-  empty.style.display = 'none';
   list.querySelectorAll('.history-item').forEach(el => el.remove());
-
-  history.forEach((item, i) => {
+  if(history.length === 0){ empty.style.display='block'; return; }
+  empty.style.display = 'none';
+  history.forEach(item => {
     const div = document.createElement('div');
     div.className = 'history-item';
     div.innerHTML = `
@@ -747,32 +418,24 @@ function renderHistory(){
       <div class="history-lang">
         <span class="history-lang-tag">${item.fromName}</span>
         <span style="color:var(--text3);font-size:0.6rem">↓</span>
-        <span class="history-lang-tag" onclick="speakText('${item.translated.replace(/'/g,"\\'")}','${item.toLang}')" title="Speak">🔊 ${item.toName}</span>
-      </div>
-    `;
+        <span class="history-lang-tag" onclick="speakText('${item.translated.replace(/'/g,"\\'")}','${item.toLang}')">🔊 ${item.toName}</span>
+      </div>`;
     list.appendChild(div);
   });
 }
 
-function clearHistory(){
-  history = [];
-  renderHistory();
-}
+function clearHistory(){ history=[]; renderHistory(); }
 
-// ─── UTILS ───
 function copyText(id){
   const text = document.getElementById(id).textContent;
   if(!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    setStatus('✓ Copied to clipboard');
-  });
+  navigator.clipboard.writeText(text).then(() => setStatus('✓ Copied to clipboard'));
 }
 
 function clearOriginal(){
   finalTranscript = '';
   document.getElementById('originalText').innerHTML = '';
   document.getElementById('translatedText').textContent = '';
-  currentTranslation = '';
   updatePlaceholders();
 }
 
@@ -783,7 +446,6 @@ function updatePlaceholders(){
   document.getElementById('translatedPlaceholder').style.display = trans ? 'none' : 'block';
 }
 
-// load voices
 window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 updatePlaceholders();
 setStatus('Ready — select your languages and press the microphone to begin');
