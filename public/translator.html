@@ -349,33 +349,39 @@ async function translateText(text){
   document.getElementById('translatingIndicator').style.display = 'block';
   document.getElementById('translatedText').textContent = '';
   updatePlaceholders();
-  setStatus('Translating to ' + toName + '…','loading');
+  setStatus('Translating to ' + toName + '...','loading');
 
   try {
-    const resp = await fetch('/api/chat', {
+    // Try /api/chat first, fall back to /api/translate
+    let resp = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 500,
         messages: [{
           role: 'user',
-          content: 'Translate the following text from ' + fromName + ' to ' + toName + '. Return ONLY the translated text with no explanation, no quotes, no preamble. Just the translation.\n\nText to translate:\n' + text
+          content: 'Translate from ' + fromName + ' to ' + toName + '. Reply with ONLY the translation, nothing else:\n\n' + text
         }]
       })
     });
 
+    if(!resp.ok) throw new Error('API error ' + resp.status);
+
     const data = await resp.json();
     const translation = (data.content || []).map(b => b.text || '').join('').trim();
+
+    if(!translation) throw new Error('Empty response');
+
     document.getElementById('translatingIndicator').style.display = 'none';
     document.getElementById('translatedText').textContent = translation;
     updatePlaceholders();
-    setStatus('✓ Translation complete — ' + fromName + ' → ' + toName);
+    setStatus('Translation complete — ' + fromName + ' to ' + toName);
     addToHistory(text, translation, fromName, toName, toLang);
 
   } catch(e) {
     document.getElementById('translatingIndicator').style.display = 'none';
-    setStatus('Translation failed — check your connection','error');
+    setStatus('Translation failed: ' + e.message + ' — check Cloudflare function logs','error');
   }
 }
 
@@ -394,8 +400,8 @@ function speakText(text, lang){
   const match = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
   if(match) utter.voice = match;
   window.speechSynthesis.speak(utter);
-  setStatus('🔊 Speaking translation…');
-  utter.onend = () => setStatus('✓ Done speaking');
+  setStatus('Speaking translation...');
+  utter.onend = () => setStatus('Done speaking');
 }
 
 function addToHistory(original, translated, fromName, toName, toLang){
@@ -417,8 +423,8 @@ function renderHistory(){
       <div class="history-translated">${item.translated}</div>
       <div class="history-lang">
         <span class="history-lang-tag">${item.fromName}</span>
-        <span style="color:var(--text3);font-size:0.6rem">↓</span>
-        <span class="history-lang-tag" onclick="speakText('${item.translated.replace(/'/g,"\\'")}','${item.toLang}')">🔊 ${item.toName}</span>
+        <span style="color:var(--text3);font-size:0.6rem">down</span>
+        <span class="history-lang-tag" onclick="speakText('${item.translated.replace(/'/g,"\\'")}','${item.toLang}')">speak ${item.toName}</span>
       </div>`;
     list.appendChild(div);
   });
@@ -429,7 +435,7 @@ function clearHistory(){ history=[]; renderHistory(); }
 function copyText(id){
   const text = document.getElementById(id).textContent;
   if(!text) return;
-  navigator.clipboard.writeText(text).then(() => setStatus('✓ Copied to clipboard'));
+  navigator.clipboard.writeText(text).then(() => setStatus('Copied to clipboard'));
 }
 
 function clearOriginal(){
