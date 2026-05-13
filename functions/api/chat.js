@@ -11,6 +11,7 @@ export async function onRequestPost(context) {
       body: JSON.stringify(body)
     });
     const data = await response.json();
+    console.log('ANTHROPIC:', JSON.stringify(data));
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
@@ -21,6 +22,7 @@ export async function onRequestPost(context) {
       }
     });
   } catch(e) {
+    console.log('ERROR:', e.message);
     return new Response(JSON.stringify({error: e.message}), {
       status: 500,
       headers: {
